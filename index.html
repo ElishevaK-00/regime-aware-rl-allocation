@@ -67,29 +67,30 @@
         </div>
     </div>
 
-    <div class="metric-card">
-        <label>Classical MSP Scenario Tree Nodes (Exponential: 3<sup>Horizon</sup>)</label>
+        <div class="metric-card">
+        <label>Classical MSP Scenario Tree Growth Footprint (Exponential Complexity: $\mathcal{O}(B^T)$)</label>
         <div class="bar-container">
             <div id="msp-fill" class="bar msp-bar" style="width: 100%;"></div>
-            <span id="msp-txt" class="bar-text">27 Active Nodes</span>
+            <span id="msp-txt" class="bar-text">81 Active Scenario Leaf Nodes</span>
         </div>
     </div>
 
     <div class="metric-card">
-        <label>Hybrid RL Network Space (Bounded State Variable Footprint)</label>
+        <label>Hybrid RL Policy Network Approximation Layer (Bounded State Feature Footprint)</label>
         <div class="bar-container">
-            <div id="rl-fill" class="bar rl-bar" style="width: 30%;"></div>
-            <span id="rl-txt" class="bar-text">9 Linear Dimensions</span>
+            <div id="rl-fill" class="bar rl-bar" style="width: 15%;"></div>
+            <span id="rl-txt" class="bar-text">12-Dimensional Truncated Horizon Bounds</span>
         </div>
     </div>
 
     <div class="metric-card">
-        <label>Policy Evaluation Execution Path Accuracy</label>
+        <label>Expected Optimality Convergence & Realized Policy Variance</label>
         <p style="margin: 5px 0 0 0; font-size: 0.9rem;">
-            Classical Convex Solver: <span id="class-acc" style="color:#ef4444; font-weight:bold;">73%</span> | 
-            Learning-Enabled Policy Layer: <span id="hyb-acc" style="color:#10b981; font-weight:bold;">92%</span>
+            Classical Multi-Stage Tree Solver: <span id="class-acc" style="color:#ef4444; font-weight:bold;">Suboptimal Out-of-Sample Failure</span> | 
+            Hybrid Value Approximator Frontier: <span id="hyb-acc" style="color:#10b981; font-weight:bold;">Converged Policy Trajectory</span>
         </p>
     </div>
+
 
     <h3>📊 Active Vector Allocation Attractors</h3>
     <div class="allocation-grid">

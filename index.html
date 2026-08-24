@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid MSP-RL Engine Workspace</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            padding: 40px;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #111827;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid #1f2937;
+        }
+        h1 { color: #38bdf8; border-bottom: 2px solid #1f2937; padding-bottom: 10px; margin-top: 0; }
+        .control-group {
+            display: flex;
+            gap: 20px;
+            margin: 25px 0;
+            background: #1f2937;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .control { flex: 1; display: flex; flex-direction: column; }
+        label { font-size: 0.85rem; color: #9ca3af; margin-bottom: 5px; font-weight: bold; }
+        input[type="range"] { width: 100%; accent-color: #38bdf8; }
+        .metric-card {
+            background: #111827;
+            border: 1px solid #374151;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .bar-container { background: #374151; border-radius: 4px; height: 24px; width: 100%; margin-top: 5px; overflow: hidden; position: relative; }
+        .bar { height: 100%; transition: width 0.3s ease; }
+        .msp-bar { background: linear-gradient(90deg, #ef4444, #b91c1c); }
+        .rl-bar { background: linear-gradient(90deg, #10b981, #047857); }
+        .bar-text { position: absolute; left: 10px; top: 3px; font-size: 0.85rem; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .allocation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 25px; }
+        .vector-tag { background: #1f2937; padding: 12px; border-radius: 6px; border-left: 4px solid #38bdf8; }
+        .vector-val { font-family: monospace; color: #fbbf24; font-weight: bold; float: right; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📡 Multi-Stage MSP vs. Hybrid RL Workspace</h1>
+    <p style="color: #9ca3af;">Interactive matrix profile visualizing tree truncation and capital gains drag optimizations based on the Mulvey-Luo Hybrid framework.</p>
+
+    <div class="control-group">
+        <div class="control">
+            <label id="horizon-label">Lookahead Horizon Stages: 3</label>
+            <input type="range" id="horizon" min="1" max="5" value="3" oninput="updateSimulation()">
+        </div>
+        <div class="control">
+            <label id="tax-label">Endogenous Tax Friction Drag: 15%</label>
+            <input type="range" id="tax" min="5" max="50" value="15" oninput="updateSimulation()">
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <label>Classical MSP Scenario Tree Nodes (Exponential: 3<sup>Horizon</sup>)</label>
+        <div class="bar-container">
+            <div id="msp-fill" class="bar msp-bar" style="width: 100%;"></div>
+            <span id="msp-txt" class="bar-text">27 Active Nodes</span>
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <label>Hybrid RL Network Space (Bounded State Variable Footprint)</label>
+        <div class="bar-container">
+            <div id="rl-fill" class="bar rl-bar" style="width: 30%;"></div>
+            <span id="rl-txt" class="bar-text">9 Linear Dimensions</span>
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <label>Policy Evaluation Execution Path Accuracy</label>
+        <p style="margin: 5px 0 0 0; font-size: 0.9rem;">
+            Classical Convex Solver: <span id="class-acc" style="color:#ef4444; font-weight:bold;">73%</span> | 
+            Learning-Enabled Policy Layer: <span id="hyb-acc" style="color:#10b981; font-weight:bold;">92%</span>
+        </p>
+    </div>
+
+    <h3>📊 Active Vector Allocation Attractors</h3>
+    <div class="allocation-grid">
+        <div class="vector-tag">Equities (BMGA) <span id="v1" class="vector-val">20%</span></div>
+        <div class="vector-tag">Fixed Income <span id="v2" class="vector-val">20%</span></div>
+        <div class="vector-tag">Defensive Cash <span id="v3" class="vector-val">20%</span></div>
+        <div class="vector-tag">Commodities <span id="v4" class="vector-val">20%</span></div>
+        <div class="vector-tag">Defensive Hedges (BMDA) <span id="v5" class="vector-val">20%</span></div>
+    </div>
+</div>
+
+<script>
+    function updateSimulation() {
+        const horizon = parseInt(document.getElementById('horizon').value);
+        const tax = parseInt(document.getElementById('tax').value) / 100;
+
+        document.getElementById('horizon-label').innerText = `Lookahead Horizon Stages: ${horizon}`;
+        document.getElementById('tax-label').innerText = `Endogenous Tax Friction Drag: ${(tax * 100).toFixed(0)}%`;
+
+        // Calculate nodes
+        const mspNodes = Math.pow(3, horizon);
+        const rlNodes = horizon * 3;
+
+        // Graphic scaling caps
+        const maxMspDisplayNodes = 243; 
+        const mspPercent = Math.min(100, (mspNodes / maxMspDisplayNodes) * 100);
+        const rlPercent = Math.min(100, (rlNodes / maxMspDisplayNodes) * 100);
+
+        document.getElementById('msp-fill').style.width = `${mspPercent}%`;
+        document.getElementById('msp-txt').innerText = `${mspNodes} Active Scenario Nodes`;
+
+        document.getElementById('rl-fill').style.width = `${Math.max(5, rlPercent)}%`;
+        document.getElementById('rl-txt').innerText = `${rlNodes} Linear Matrix Variables`;
+
+        // Tracking efficiencies
+        const classicalAcc = Math.max(10, Math.round(100 - (tax * 180)));
+        const hybridAcc = Math.max(45, Math.round(98 - (tax * 35)));
+
+        document.getElementById('class-acc').innerText = `${classicalAcc}%`;
+        document.getElementById('hyb-acc').innerText = `${hybridAcc}%`;
+
+        // Distribute dynamic allocations based on current inputs
+        let w5 = tax > 0.35 ? Math.round(15 + (tax * 50)) : Math.round(20 - (tax * 10));
+        let balance = 100 - w5;
+        let rem = Math.round(balance / 4);
+
+        document.getElementById('v1').innerText = `${rem}%`;
+        document.getElementById('v2').innerText = `${rem}%`;
+        document.getElementById('v3').innerText = `${rem}%`;
+        document.getElementById('v4').innerText = `${rem}%`;
+        document.getElementById('v5').innerText = `${w5}%`;
+    }
+    // Set initial frame parameters
+    updateSimulation();
+</script>
+</body>
+</html>
